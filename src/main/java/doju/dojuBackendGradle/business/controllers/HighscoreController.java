@@ -2,6 +2,7 @@ package doju.dojuBackendGradle.business.controllers;
 
 import doju.dojuBackendGradle.business.models.Highscore;
 import doju.dojuBackendGradle.business.services.HighscoreServiceImpl;
+import doju.dojuBackendGradle.business.utils.HighscoreDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,22 +14,30 @@ import java.util.UUID;
 @RequestMapping(path = "doju/v1/highscore")
 public class HighscoreController {
 
+    private int lastScore = 0;
+
     private final HighscoreServiceImpl highscoreService; //instantiated by lombok
 
+    @CrossOrigin
     @GetMapping
     public List<Highscore> getHighscore(){
         return highscoreService.getHighscore();
     }
 
+    @CrossOrigin
     @DeleteMapping("/delete")
     public void deleteHighscore(@RequestParam int id){
         highscoreService.deleteHighscore(id);
     }
 
+    @CrossOrigin
     @PostMapping
-    public void addHighscore(@RequestParam int value) {
-        Highscore highscore = new Highscore(value);
-        highscore.setId(1); //because we only want one highscore currently so id is always the same. Will be overwritten everytime
-        highscoreService.addHighscore(highscore);
+    public void addHighscore(@RequestBody HighscoreDto highscore) {
+        if (highscore.getValue() > lastScore) {
+            lastScore = highscore.getValue();
+            Highscore newHighscore = new Highscore(highscore.getValue());
+            newHighscore.setId(1); //because we only want one highscore currently so id is always the same. Will be overwritten everytime
+            highscoreService.addHighscore(newHighscore);
+        }
     }
 }
