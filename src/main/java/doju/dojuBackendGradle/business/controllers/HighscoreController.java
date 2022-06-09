@@ -14,8 +14,6 @@ import java.util.UUID;
 @RequestMapping(path = "doju/v1/highscore")
 public class HighscoreController {
 
-    private int lastScore = 0;
-
     private final HighscoreServiceImpl highscoreService; //instantiated by lombok
 
     @CrossOrigin
@@ -33,8 +31,7 @@ public class HighscoreController {
     @CrossOrigin
     @PostMapping
     public void addHighscore(@RequestBody HighscoreDto highscore) {
-        if (highscore.getValue() > lastScore) {
-            lastScore = highscore.getValue();
+        if (highscore.getValue() > highscoreService.getHighscore().get(0).getValue()) {
             Highscore newHighscore = new Highscore(highscore.getValue());
             newHighscore.setId(1); //because we only want one highscore currently so id is always the same. Will be overwritten everytime
             highscoreService.addHighscore(newHighscore);

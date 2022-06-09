@@ -19,7 +19,6 @@ public class Highscore {
 
     private Highscore(){
         super();
-        System.out.println("constructed");
     }
 
     public Highscore(int value) {
